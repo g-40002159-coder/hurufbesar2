@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jom Belajar Huruf Besar</title>
+<style>
+:root{--blue:#1686c9;--ink:#183047;--pink:#ffdeeb;--mint:#dff7e5;--cream:#fffaf0;--line:#d9e5ef}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#eaf8ff,#fff8ec);font-family:Arial,Helvetica,sans-serif;color:var(--ink);font-size:18px}
+header{background:#1686c9;color:#fff;text-align:center;padding:24px 16px 20px;border-bottom:7px solid #ffd84d}
+header h1{font-size:clamp(28px,5vw,42px);margin:0 0 8px;line-height:1.1}
+header p{margin:0;font-size:17px}
+main{max-width:900px;margin:20px auto;padding:0 14px 36px}
+.intro,.question,.result{background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 3px 0 #dfeaf1}
+.intro{background:#fffdf5}
+.intro strong{color:#b54708}
+.question h2{font-size:19px;margin:0 0 10px}
+.sentence{background:#f3f8ff;border-radius:12px;padding:12px;margin-bottom:10px;line-height:1.5}
+label{display:block;font-weight:bold;margin-bottom:6px}
+input[type=text]{width:100%;font:inherit;padding:13px;border:2px solid #bdcfe0;border-radius:11px;background:#fff;color:#172b3d}
+input[type=text]:focus{outline:3px solid #bce7ff;border-color:var(--blue)}
+.feedback{font-size:16px;margin-top:9px;font-weight:bold}
+.feedback.good{color:#147d42}.feedback.bad{color:#b42318}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+button{font:inherit;font-weight:bold;border:0;border-radius:13px;padding:14px 18px;cursor:pointer}
+.primary{background:#1686c9;color:white;flex:1}.secondary{background:#ffe58a;color:#352b00}.reset{background:#e9eef5;color:#26394b}
+.result{display:none;background:#f1fff4;border-color:#91d8a7;text-align:center}
+.score{font-size:32px;font-weight:800;color:#147d42}
+.small{font-size:15px;color:#526579}
+footer{text-align:center;padding:0 12px 26px;color:#536779;font-size:14px}
+@media(min-width:680px){.question-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.question{margin-bottom:0}.controls{margin-top:18px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌟 Jom Belajar Huruf Besar! ✏️</h1>
+  <p>Latihan Bahasa Melayu • Mesra Murid Pendidikan Khas</p>
+</header>
+<main>
+  <section class="intro">
+    <strong>📘 Arahan:</strong> Baca ayat. Taip semula ayat dengan penggunaan huruf besar yang betul. Kemudian tekan <b>Semak Jawapan</b>.
+    <p class="small">Petua: Huruf pertama ayat, nama orang, nama tempat dan nama hari perlu ditulis dengan huruf besar.</p>
+  </section>
+  <div id="questions" class="question-grid"></div>
+  <div class="controls">
+    <button class="primary" onclick="checkAnswers()">✅ Semak Jawapan</button>
+    <button class="secondary" onclick="showAnswers()">💡 Lihat Jawapan</button>
+    <button class="reset" onclick="resetQuiz()">↻ Cuba Semula</button>
+  </div>
+  <section id="result" class="result" aria-live="polite">
+    <div>Markah kamu</div>
+    <div class="score" id="score">0 / 10</div>
+    <p id="message"></p>
+  </section>
+</main>
+<footer>Belajar sedikit demi sedikit. Kamu pasti boleh! 💛</footer>
+<script>
+const items = [
+ {q:"1", prompt:"ali pergi ke sekolah.", answer:"Ali pergi ke sekolah."},
+ {q:"2", prompt:"saya tinggal di pontian.", answer:"Saya tinggal di Pontian."},
+ {q:"3", prompt:"hari ini hari selasa.", answer:"Hari ini hari Selasa."},
+ {q:"4", prompt:"nama guru saya cikgu aisyah.", answer:"Nama guru saya Cikgu Aisyah."},
+ {q:"5", prompt:"kami bercuti di pulau tioman.", answer:"Kami bercuti di Pulau Tioman."},
+ {q:"6", prompt:"ibu memasak nasi di dapur.", answer:"Ibu memasak nasi di dapur."},
+ {q:"7", prompt:"nama adik saya ialah danial.", answer:"Nama adik saya ialah Danial."},
+ {q:"8", prompt:"kami tinggal di johor.", answer:"Kami tinggal di Johor."},
+ {q:"9", prompt:"hari ini hari khamis.", answer:"Hari ini hari Khamis."},
+ {q:"10", prompt:"saya membaca buku. nama buku itu si kancil.", answer:"Saya membaca buku. Nama buku itu Si Kancil."}
+];
+const container = document.getElementById('questions');
+container.innerHTML = items.map((it,i)=>`
+  <section class="question">
+    <h2>Soalan ${it.q}</h2>
+    <div class="sentence">${it.prompt}</div>
+    <label for="a${i}">Tulis semula ayat:</label>
+    <input id="a${i}" type="text" autocomplete="off" placeholder="Taip jawapan di sini" aria-describedby="f${i}">
+    <div id="f${i}" class="feedback" aria-live="polite"></div>
+  </section>`).join('');
+function clean(s){return s.trim().replace(/\s+/g,'').replace(/[“”‘’]/g,"'");}
+function checkAnswers(){
+ let score=0;
+ items.forEach((it,i)=>{
+   const field=document.getElementById('a'+i), feedback=document.getElementById('f'+i);
+   if(clean(field.value)===clean(it.answer)){
+     score++; feedback.className='feedback good'; feedback.textContent='✓ Betul! Bagus!';
+   }else{
+     feedback.className='feedback bad'; feedback.textContent='✗ Belum tepat. Cuba semak huruf besar dan tanda noktah.';
+   }
+ });
+ document.getElementById('score').textContent=score+' / '+items.length;
+ document.getElementById('message').textContent=score===10?'Hebat! Semua jawapan betul! 🎉':score>=7?'Bagus! Semak semula soalan yang salah.':'Teruskan mencuba. Kamu boleh buat!';
+ document.getElementById('result').style.display='block';
+ document.getElementById('result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function showAnswers(){
+ items.forEach((it,i)=>{
+   const feedback=document.getElementById('f'+i);
+   feedback.className='feedback'; feedback.style.color='#175ca8';
+   feedback.textContent='Jawapan: '+it.answer;
+ });
+}
+function resetQuiz(){
+ items.forEach((it,i)=>{document.getElementById('a'+i).value='';const f=document.getElementById('f'+i);f.textContent='';f.className='feedback';f.style.color='';});
+ document.getElementById('result').style.display='none';
+ document.getElementById('a0').focus();
+}
+</script>
+</body>
+</html>
